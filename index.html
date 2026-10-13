@@ -3,9 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="SteerAct: gated, single-feature steering for frozen robot policies. Explore real-robot comparisons, the video gallery, and the intervention mechanism.">
+  <meta name="description" content="SteerAct connects offline feature selection with online steering through a shared temporal descriptor of sparse-feature dynamics, without updating action-model weights.">
   <meta name="color-scheme" content="light">
-  <title>SteerAct — Temporally Gated Single-Feature Steering of Frozen Action Models</title>
+  <title>SteerAct: Unlocking Action Models through Few-Shot Temporal Steering</title>
+  <meta property="og:title" content="SteerAct: Unlocking Action Models through Few-Shot Temporal Steering">
+  <meta property="og:description" content="A shared temporal descriptor connects offline feature selection with online steering of frozen robot action models.">
+  <meta property="og:url" content="https://steeract.github.io/">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B746A'/%3E%3Cpath d='M6 20h6l4-10 4 13 3-7h3' fill='none' stroke='white' stroke-width='2.5'/%3E%3C/svg%3E">
   <style>
     :root { --paper:#fafaf7; --ink:#152b29; --muted:#5c696a; --teal:#0b746a; --teal-dark:#07584f; --teal-light:#e8f3ee; --line:#d9dfda; --quiet:#eff1ed; --clay:#a8583d; --white:#fff; }
@@ -51,8 +54,8 @@
     .video-status { font-size:12px; color:var(--muted); }
     .video-placeholder { aspect-ratio:16/8.1; min-height:160px; border:1px solid var(--line); background:#ecefeb; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; position:relative; }
     .video-card.ours .video-placeholder { background:#eaf0ec; border-color:#c6d8ce; }
-    .pair-transport { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:36px; margin:0; padding:7px 14px; border:1px solid #bfd5cb; border-radius:999px; background:var(--teal-light); color:var(--teal-dark); font-size:12px; font-weight:650; white-space:nowrap; }
-    .pair-transport:hover { background:#dcece4; }
+    .pair-transport { grid-column:1/-1; justify-self:center; display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; margin:0; padding:10px 22px; border:1px solid var(--teal); border-radius:999px; background:var(--teal); color:white; font-family:inherit; font-size:14px; font-weight:650; white-space:nowrap; }
+    .pair-transport:hover { background:var(--teal-dark); }
     .pair-transport svg { width:12px; height:12px; fill:currentColor; }
     .frame-icon { width:44px; height:36px; stroke:#6d7975; fill:none; stroke-width:1.2; }
     .video-card.ours .frame-icon { stroke:var(--teal); }
@@ -423,6 +426,7 @@
     .closing { order:6; }
     .hero { padding-top:72px; padding-bottom:18px; }
     .hero .lead { max-width:700px; }
+    .title-phrase { white-space:nowrap; }
     .section { margin-top:78px; padding-top:0; border-top:0; }
     .section-heading { max-width:760px; margin:0 auto 27px; justify-content:center; text-align:center; }
     .section-heading .section-lead { margin-inline:auto; }
@@ -432,6 +436,12 @@
     .method-figure { margin:31px auto 0; max-width:1080px; }
     .method-figure img { display:block; width:100%; height:auto; }
     .method-figure figcaption { max-width:860px; margin:14px auto 0; color:var(--muted); font-size:13px; line-height:1.6; text-align:center; }
+    .method-summary { display:grid; grid-template-columns:1fr 1fr; gap:24px 38px; margin:28px auto 0; max-width:960px; }
+    .method-summary article { border-top:1px solid var(--line); padding-top:17px; }
+    .method-summary h3 { margin:0 0 8px; font-size:17px; font-weight:650; }
+    .method-summary p { margin:0; font-size:15px; color:var(--muted); line-height:1.7; }
+    .paper-copy .abstract-keywords { font-size:13px; color:var(--muted); }
+    .mechanism-note { margin:15px auto 0; max-width:850px; color:var(--muted); font-size:12px; line-height:1.65; text-align:center; }
     .section-index,.nav .preview { display:none; }
     .choice-tabs { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:0 0 20px; }
     .choice-tab { border:1px solid var(--line); border-radius:999px; background:transparent; color:var(--muted); padding:9px 15px; min-height:42px; font-size:14px; }
@@ -440,7 +450,7 @@
     .robot-case,.robot-case:first-child { padding:26px; border:1px solid var(--line); border-radius:8px; background:white; }
     .robot-case:first-child .case-head h3 { font-size:25px; }
     .robot-case:first-child .gain-pill { font-size:16px; padding:8px 14px; }
-    .robot-case .case-actions .pair-transport,.robot-case .case-actions .gain-pill { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:8px 14px; font-family:inherit; font-size:14px; font-weight:600; line-height:1.2; }
+    .robot-case .case-actions .gain-pill { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:8px 14px; font-family:inherit; font-size:14px; font-weight:600; line-height:1.2; }
     .simulation-choices { margin-bottom:20px; text-align:center; }
     .choice-label { margin:0 0 8px; color:var(--muted); font-size:12px; font-weight:650; letter-spacing:.08em; text-transform:uppercase; }
     .benchmark-tabs { gap:24px; margin-bottom:18px; }
@@ -461,6 +471,7 @@
     #mechanism .explanation-head { justify-content:center; text-align:center; }
     #mechanism .explanation-head > div { margin-inline:auto; }
     #mechanism .section-lead { margin-inline:auto; }
+    .playback-speed { display:inline-block; margin-left:9px; padding:3px 9px; border:1px solid var(--line); border-radius:999px; color:var(--ink); font-size:12px; font-weight:600; white-space:nowrap; vertical-align:middle; }
     .mechanism-grid { grid-template-columns:1fr 1fr; gap:20px; }
     .mechanism-grid > .chart-panel { grid-column:1/-1; }
     .mechanism-grid .chart-panel { padding:23px 24px 15px; }
@@ -481,6 +492,7 @@
       .task-tabs { width:100%; }
       .hero h1.paper-title { font-size:clamp(2rem,9vw,2.6rem); }
       .hero-subtitle { font-size:1.08rem; }
+      .method-summary { grid-template-columns:1fr; gap:20px; }
     }
     @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
     @media print {
@@ -503,10 +515,10 @@
     </header>
     <main id="main">
       <section class="hero" id="overview" aria-labelledby="hero-title">
-        <p class="eyebrow">Inference-time steering for frozen robot policies</p>
-        <h1 class="paper-title" id="hero-title"><span class="title-name">SteerAct</span>Temporally Gated Single-Feature Steering of Frozen Action Models</h1>
-        <p class="hero-subtitle">More successful robot policies. <em>One sparse feature.</em> No fine-tuning.</p>
-        <p class="lead">Successes and failures leave different temporal signatures in sparse latent space. SteerAct uses these signatures to guide online, gated interventions—while keeping the policy frozen.</p>
+        <p class="eyebrow">Few-shot temporal steering for robot action models</p>
+        <h1 class="paper-title" id="hero-title"><span class="title-name">SteerAct:</span> Unlocking Action Models through <span class="title-phrase">Few-Shot</span> Temporal Steering</h1>
+        <p class="hero-subtitle">One temporal descriptor. <em>One feature per task.</em> Frozen model weights.</p>
+        <p class="lead">A shared descriptor of feature dynamics links offline feature selection with online decisions about when and how to steer.</p>
         <div class="resources" aria-label="Project resources and demonstrations">
           <a class="resource primary" href="#real-robots">Explore the demos <span aria-hidden="true">↗</span></a>
         </div>
@@ -514,25 +526,32 @@
       <section class="section" id="abstract" aria-labelledby="abstract-title">
         <div class="section-heading"><div><p class="eyebrow">Paper overview</p><h2 id="abstract-title">Abstract</h2></div></div>
         <div class="paper-copy">
-          <p>Improving pretrained robot action models from a few rollouts requires identifying what to steer, when to intervene, and the sign of the correction. We find that successful and failed executions exhibit distinct temporal patterns in sparse latent space, and that steering one feature per task can improve closed-loop success without updating model weights.</p>
-          <p>SteerAct summarizes sparse-feature activation histories from successful and failed rollouts, constructs outcome-conditioned reference banks, and selects the feature with the strongest outcome separation. Online, a support gate checks whether the observed history provides enough evidence for comparison, while a failure gate tests whether its descriptor is closer to failed than successful references. When both gates are open, a bounded search selects a signed correction predicted to move the current descriptor closer to the success bank.</p>
-          <p>Using 24 outcome-labeled reference rollouts per task, SteerAct improves task success by approximately 10% relative to unsteered policies across π<sub>0.5</sub>, Fast-WAM, RoboTwin 2.0, DexJoCo, and real-world manipulation.</p>
+          <p>Improving pretrained robot action models at test time from only a few rollouts remains challenging. Activation steering offers a lightweight approach by modifying feature activations while keeping model weights fixed. However, effective steering requires identifying which features to modify and determining the timing and strength of modification.</p>
+          <p>We introduce SteerAct, a few-shot temporal steering framework that uses a shared temporal descriptor of sparse-feature dynamics for offline feature selection and online control. A pretrained sparse autoencoder provides candidate features, and our temporal descriptor summarizes the distribution of local activation-order patterns for each feature, enabling comparisons across rollouts without requiring timestep alignment. Offline, we select a single feature per task whose temporal descriptor banks best separate successful and failed rollouts, and retain its success and failure reference banks. Online, the same descriptor guides intervention timing and the steering coefficient through comparisons with these references.</p>
+          <p>Using only 24 outcome-labeled rollouts per task, SteerAct improves task success by approximately 10% relative to unsteered models in evaluations spanning π<sub>0.5</sub>, Fast-WAM, RoboTwin 2.0, DexJoCo, and real-world manipulation, without updating action-model weights. Code and Demo can be found at: <a href="https://steeract.github.io/">Link</a>.</p>
+          <p class="abstract-keywords"><strong>Keywords:</strong> Vision–language–action models, World–action models, Activation steering, Few-shot adaptation.</p>
         </div>
       </section>
       <section class="section" id="method" aria-labelledby="method-title">
-        <div class="section-heading"><div><p class="eyebrow">Method</p><h2 id="method-title">Reference-guided steering, end to end.</h2><p class="section-lead">Outcome-labeled rollouts build the reference banks offline; supported, failure-like prefixes trigger signed corrections online.</p></div></div>
+        <div class="section-heading"><div><p class="eyebrow">Method</p><h2 id="method-title">One temporal descriptor, offline and online.</h2><p class="section-lead">A shared sparse autoencoder (SAE) provides features and steering directions. The descriptor summarizes local activation-order patterns, comparing histories without timestep alignment.</p></div></div>
         <figure class="method-figure">
-          <img src="assets/images/steeract-method.png" width="1786" height="898" loading="lazy" alt="SteerAct method overview. Offline, a shared sparse autoencoder converts successful and failed reference rollouts into temporal descriptors and reference banks for feature selection. Online, the same autoencoder forms a feature history; support and failure gates determine when to steer, and a signed correction edits a frozen policy direction.">
-          <figcaption>Offline reference construction and feature selection, followed by online reference-guided steering of a frozen action model.</figcaption>
+          <a href="assets/images/steeract-method-v5.png" target="_blank" rel="noopener" aria-label="Open the method figure at full size">
+          <img src="assets/images/steeract-method-v5.png" width="2150" height="1100" loading="lazy" alt="SteerAct methodology from the paper. Offline, a frozen shared SAE exposes candidate features. Their temporal descriptors form success and failure reference banks used to select one feature. Online, the same descriptor compares its observed intensity history with these banks. The Support Gate and Failure Gate enable a bounded signed coefficient search, and the selected decoder direction modifies the frozen action model's hidden states.">
+          </a>
+          <figcaption>The same descriptor represents complete reference rollouts, the observed execution prefix, and candidate-edited histories. The SAE and action model remain frozen during feature selection and steering.</figcaption>
         </figure>
+        <div class="method-summary">
+          <article><h3>Offline: select what to steer</h3><p>Build <strong>success and failure reference banks</strong> for each candidate feature. Select the feature whose temporal patterns best separate the outcomes, accounting for variation within each bank. Retain its decoder direction and reference banks for deployment.</p></article>
+          <article><h3>Online: decide when and how</h3><p>The <strong>Support Gate</strong> checks whether the current history supports comparison; the <strong>Failure Gate</strong> checks whether it is closer to failure. When both gates are open, a bounded search chooses a signed coefficient whose locally predicted descriptor is closest to the success bank.</p></article>
+        </div>
       </section>
       <section class="section" id="real-robots" aria-labelledby="real-title">
-        <div class="section-heading"><div><p class="eyebrow">Real robot results</p><h2 id="real-title">Same policy. Higher success.</h2><p class="section-lead">Choose a task to compare one unsteered failure with one SteerAct success.</p></div></div>
+        <div class="section-heading"><div><p class="eyebrow">Real robot results</p><h2 id="real-title">Same action model. Higher success.</h2><p class="section-lead">Three physical tasks with a frozen π<sub>0.5</sub> backbone. Rates use 30 trials per task and method; each video pair shows an example failure and success.</p></div></div>
         <div class="choice-tabs" id="real-tabs" role="tablist" aria-label="Real-robot task"></div>
         <div class="robot-list" id="robot-list"></div>
       </section>
       <section class="section" id="videos" aria-labelledby="videos-title">
-        <div class="section-heading"><div><p class="eyebrow">Simulation results</p><h2 id="videos-title">Same task. With and without steering.</h2></div></div>
+        <div class="section-heading"><div><p class="eyebrow">Simulation results</p><h2 id="videos-title">Across backbones and embodiments.</h2><p class="section-lead">Selected examples from nine RoboTwin 2.0 gripper tasks and nine DexJoCo dexterous-hand tasks, evaluated with π<sub>0.5</sub> and Fast-WAM. Rates use 200 held-out rollouts per task and method.</p></div></div>
         <div class="simulation-choices" aria-label="Choose a simulation comparison">
           <p class="choice-label">Benchmark</p>
           <div class="choice-tabs benchmark-tabs" id="sim-benchmark-tabs" role="tablist" aria-label="Simulation benchmark"></div>
@@ -544,14 +563,14 @@
         <div class="explanation-head"><div>
           <p class="eyebrow">How it works</p>
           <h2 id="mechanism-title">See when steering turns on.</h2>
-          <p class="section-lead">Feature activation, gate states, and both rollouts on one timeline.</p>
+          <p class="section-lead">Follow the feature history, two gates, and steering coefficient alongside the robot videos. <span class="playback-speed" aria-label="Timeline playback speed: 3 times">3× speed</span></p>
         </div></div>
         <noscript><p>Enable JavaScript to view the real-robot comparisons, video slots, and interactive timeline.</p></noscript>
         <div class="mechanism-grid">
           <div class="chart-panel">
-            <div class="chart-title"><h3>Selected feature and intervention</h3><div class="trace-legend" aria-hidden="true"><span class="trace-key reference">Reference success bank</span><span class="trace-key">SteerAct</span><span class="trace-key baseline">Unsteered</span></div></div>
-            <div class="chart-grid" role="img" aria-label="Reference success bank, SteerAct, and unsteered Open Microwave feature histories, two gates, and signed corrections on a shared logged-timestep axis.">
-              <div class="row-label">Feature activation<small>Logged value</small></div>
+            <div class="chart-title"><h3>Illustrative feature dynamics</h3><div class="trace-legend" aria-hidden="true"><span class="trace-key reference">Illustrative success reference</span><span class="trace-key">SteerAct</span><span class="trace-key baseline">Unsteered</span></div></div>
+            <div class="chart-grid" role="img" aria-label="Illustrative success reference and feature dynamics, the Support Gate, the Failure Gate, and the steering coefficient on a shared timestep axis alongside Open Microwave videos.">
+              <div class="row-label">Feature intensity<small>Illustrative trace</small></div>
               <div class="trace-container">
                 <svg class="trace-svg" viewBox="0 0 1000 150" preserveAspectRatio="none" aria-hidden="true">
                   <defs><clipPath id="history-clip"><rect id="history-window" x="0" y="0" width="583.3333" height="150"/></clipPath></defs>
@@ -566,11 +585,11 @@
                   <path id="baseline-trace-history" class="trace-line baseline-line" d="" clip-path="url(#history-clip)"/>
                 </svg>
               </div>
-              <div class="row-label">Maturity support</div><div class="track" id="maturity-track"></div>
-              <div class="row-label">Outcome gate</div><div class="track outcome" id="outcome-track"></div>
-              <div class="row-label">Signed correction</div>
+              <div class="row-label">Support gate</div><div class="track" id="maturity-track"></div>
+              <div class="row-label">Failure gate</div><div class="track outcome" id="outcome-track"></div>
+              <div class="row-label">Steering coefficient</div>
               <div class="correction-container"><svg class="correction-svg" viewBox="0 0 1000 70" preserveAspectRatio="none" aria-hidden="true"><defs><clipPath id="correction-clip"><rect id="correction-window" x="0" y="0" width="583.3333" height="70"/></clipPath></defs><path d="M0 35H1000" stroke="#b8c3bd" stroke-width="1" vector-effect="non-scaling-stroke"/><g id="correction-bars" clip-path="url(#correction-clip)"></g></svg></div>
-              <div></div><div class="axis"><span>0</span><span class="axis-label">Logged timestep</span><span>1200</span></div>
+              <div></div><div class="axis"><span>0</span><span class="axis-label">Timestep</span><span>1200</span></div>
               <div class="cursor-layer" aria-hidden="true"><div class="cursor" id="timeline-cursor" style="left:58.3333%"><span class="cursor-dot" id="feature-dot"></span></div></div>
             </div>
           </div>
@@ -580,7 +599,7 @@
               <video id="unsteered-linked-video" playsinline muted preload="metadata" hidden aria-label="Unsteered robot video controlled by the shared player"></video>
               <div class="linked-pending" id="unsteered-video-pending"><strong>Loading video</strong><small>Unsteered Open Microwave rollout</small></div>
             </div>
-            <p class="media-state" id="unsteered-media-status">Loading the measured rollout footage.</p>
+            <p class="media-state" id="unsteered-media-status">Loading the rollout footage.</p>
             <p class="media-time" id="unsteered-media-time">Unsteered timestep 0700 / 1200</p>
           </figure>
           <figure class="linked-video ours">
@@ -589,30 +608,31 @@
               <video id="steered-linked-video" playsinline muted preload="metadata" hidden aria-label="SteerAct robot video controlled by the shared player"></video>
               <div class="linked-pending" id="steered-video-pending"><strong>Loading video</strong><small>Steered Open Microwave rollout</small></div>
             </div>
-            <p class="media-state" id="steered-media-status">Loading the measured rollout footage.</p>
+            <p class="media-state" id="steered-media-status">Loading the rollout footage.</p>
             <p class="media-time" id="steered-media-time">SteerAct timestep 0700 / 1200</p>
           </figure>
         </div>
-        <div class="controls" aria-label="Shared measured timeline playback">
-          <button class="play-button" id="play-button" type="button" aria-label="Play measured timeline" aria-pressed="false"><svg class="play-icon" viewBox="0 0 12 12" aria-hidden="true"><path id="play-symbol" d="M2 1L11 6 2 11Z"/></svg><span id="play-text">Play</span></button>
-          <button class="replay" id="replay-button" type="button" aria-label="Reset measured timeline to timestep 700" title="Reset to timestep 700"><svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6a7 7 0 1 1-1 7M4 2v5h5"/></svg></button>
-          <div class="slider-wrap"><label class="sr-only" for="timeline-slider">Measured rollout timestep</label><input id="timeline-slider" type="range" min="0" max="120" value="70" step="1"><output class="frame-readout" id="frame-readout" for="timeline-slider">0700 / 1200</output></div>
+        <div class="controls" aria-label="Shared demonstration playback">
+          <button class="play-button" id="play-button" type="button" aria-label="Play shared demonstration" aria-pressed="false"><svg class="play-icon" viewBox="0 0 12 12" aria-hidden="true"><path id="play-symbol" d="M2 1L11 6 2 11Z"/></svg><span id="play-text">Play</span></button>
+          <button class="replay" id="replay-button" type="button" aria-label="Reset demonstration to timestep 700" title="Reset to timestep 700"><svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 6a7 7 0 1 1-1 7M4 2v5h5"/></svg></button>
+          <div class="slider-wrap"><label class="sr-only" for="timeline-slider">Demonstration timestep</label><input id="timeline-slider" type="range" min="0" max="120" value="70" step="1"><output class="frame-readout" id="frame-readout" for="timeline-slider">0700 / 1200</output></div>
           <p class="control-caption">Shared timeline<br>Both rollouts</p>
         </div>
+        <p class="mechanism-note">Feature curves and the shaded reference band are illustrative, not measured activation distributions. The method compares temporal descriptors with fixed success and failure banks; the shaded band is not the bank itself.</p>
         <p class="sr-only" id="sync-status" role="status" aria-live="polite"></p>
         <p class="sr-only" id="playback-announcement" role="status" aria-live="polite"></p>
       </section>
     </main>
-    <footer><span>SteerAct · Research project preview</span><span>Reported results supplied by the authors. Publication links pending.</span></footer>
+    <footer><span>SteerAct · Few-shot temporal steering</span><span>Method and reported results follow the authors’ V5 manuscript.</span></footer>
   </div>
   <script id="results-model">
     var SteerResults = (() => {
-      // Source: the supplied main results tables. Do not mix in the nine-task ablation subset.
+      // Source: V5 tables/tab1.tex; nine tasks per benchmark and backbone.
       const settings = [
-        {id:'robotwin-pi', benchmark:'RoboTwin 2.0', backbone:'π0.5', tasks:10, methods:{
-          Base:[74,72,81,43,73,89,84,47,62,77], 'DSRL-SAC':[80,78,84,40,57,49,100,65,71,100], COAST:[62,74,78,49,75,88,86,40,66,76], DrVLA:[62,84,65,60,86,72,91,48,68,72], 'SteerAct (Dec)':[79,83,77,39,81,92,87,44,67,66], 'SteerAct (Enc)':[88,83,76,58,82,94,93,52,69,80]}},
-        {id:'robotwin-wam', benchmark:'RoboTwin 2.0', backbone:'Fast-WAM', tasks:10, methods:{
-          Base:[72,77,71,63,71,91,31,53,87,79], 'DSRL-SAC':null, COAST:[64,72,73,74,77,84,52,59,78,66], DrVLA:[78,72,79,76,73,94,52,63,74,84], 'SteerAct (Dec)':[84,79,74,75,81,91,54,60,90,80], 'SteerAct (Enc)':[84,78,76,72,85,94,43,73,95,83]}},
+        {id:'robotwin-pi', benchmark:'RoboTwin 2.0', backbone:'π0.5', tasks:9, methods:{
+          Base:[74,72,43,73,89,84,47,62,77], 'DSRL-SAC':[80,78,40,57,49,100,65,71,100], COAST:[62,74,49,75,88,86,40,66,76], DrVLA:[62,84,60,86,72,91,48,68,72], 'SteerAct (Dec)':[79,83,39,81,92,87,44,67,66], 'SteerAct (Enc)':[88,83,58,82,94,93,52,69,80]}},
+        {id:'robotwin-wam', benchmark:'RoboTwin 2.0', backbone:'Fast-WAM', tasks:9, methods:{
+          Base:[72,77,63,71,91,31,53,87,79], 'DSRL-SAC':null, COAST:[64,72,74,77,84,52,59,78,66], DrVLA:[78,72,76,73,94,52,63,74,84], 'SteerAct (Dec)':[84,79,75,81,91,54,60,90,80], 'SteerAct (Enc)':[84,78,72,85,94,43,73,95,83]}},
         {id:'dexjoco-pi', benchmark:'DexJoCo', backbone:'π0.5', tasks:9, methods:{
           Base:[82,67,83,22,71,92,15,77,52], 'DSRL-SAC':[80,60,70,18,74,96,10,69,47], COAST:[87,75,79,33,69,93,19,74,59], DrVLA:[85,76,87,26,68,94,15,84,55], 'SteerAct (Dec)':[79,74,75,21,87,96,17,91,59], 'SteerAct (Enc)':[90,79,95,32,83,97,23,85,63]}},
         {id:'dexjoco-wam', benchmark:'DexJoCo', backbone:'Fast-WAM', tasks:9, methods:{
@@ -632,11 +652,11 @@
       const videos = [
         {id:'bottles-pi', title:'Put Bottles in Dustbin', group:'robotwin', setting:'robotwin-pi', taskIndex:0,
           unsteeredSrc:'assets/videos/robotwin-put-bottles-failure.mp4', steeredSrc:'assets/videos/robotwin-put-bottles-success.mp4'},
-        {id:'rank-pi', title:'Rank Blocks by Size', group:'robotwin', setting:'robotwin-pi', taskIndex:3,
+        {id:'rank-pi', title:'Rank Blocks by Size', group:'robotwin', setting:'robotwin-pi', taskIndex:2,
           unsteeredSrc:'assets/videos/robotwin-pi05-rank-blocks-baseline.mp4', steeredSrc:'assets/videos/robotwin-pi05-rank-blocks-steering.mp4'},
-        {id:'switch-wam', title:'Turn Switch', group:'robotwin', setting:'robotwin-wam', taskIndex:7,
+        {id:'switch-wam', title:'Turn Switch', group:'robotwin', setting:'robotwin-wam', taskIndex:6,
           unsteeredSrc:'assets/videos/robotwin-turn-switch-failure.mp4', steeredSrc:'assets/videos/robotwin-turn-switch-success.mp4'},
-        {id:'mouse-pad-wam', title:'Place Mouse Pad', group:'robotwin', setting:'robotwin-wam', taskIndex:8,
+        {id:'mouse-pad-wam', title:'Place Mouse Pad', group:'robotwin', setting:'robotwin-wam', taskIndex:7,
           unsteeredSrc:'assets/videos/robotwin-place-mouse-pad-failure.mp4', steeredSrc:'assets/videos/robotwin-place-mouse-pad-success.mp4'},
         {id:'bucket-pi', title:'Pick Bucket', group:'dexjoco', setting:'dexjoco-pi', taskIndex:2,
           unsteeredSrc:'assets/videos/dexjoco-pi05-pick-bucket-baseline.mp4', steeredSrc:'assets/videos/dexjoco-pi05-pick-bucket-steering.mp4'},
@@ -679,7 +699,7 @@
         button.setAttribute('aria-label',`Play both ${taskTitle} videos`);
         button.setAttribute('aria-pressed','false');
         button.innerHTML='<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1L11 6 2 11Z"/></svg><span>Loading videos</span>';
-        pair.append(button);
+        pair.prepend(button);
         const icon=button.querySelector('path'),label=button.querySelector('span');
         let playing=false,frame=null,generation=0,replay=false;
         const ready=()=>videos.length===2&&videos.every(video=>video.readyState>=1&&Number.isFinite(video.duration)&&video.duration>0);
@@ -743,7 +763,6 @@
         const article = document.createElement('article'); article.className = 'robot-case';
         article.innerHTML = `<div class="case-head"><div><h3>${task.title}</h3><p>Real robot · π<sub>0.5</sub> · Gripper</p></div><div class="case-actions"><span class="gain-pill">+${(task.ours-task.base).toFixed(1)} pp</span></div></div>`;
         const pair=comparison(task,{sides:['base','ours'],oursKey:'ours',baseLabel:'Frozen policy',srcKey:side=>`${side}Src`,score:side=>task[side],decimals:1});
-        article.querySelector('.case-actions').prepend(pair.querySelector('.pair-transport'));
         article.append(pair);
         realList.append(article);
         [...realTabs.children].forEach(button=>button.setAttribute('aria-selected',String(button.dataset.task===task.id)));
@@ -792,7 +811,6 @@
         section.innerHTML=`<div class="dataset-heading"><h3>${item.title}</h3><div class="dataset-actions"><p>${setting.benchmark} · ${setting.backbone}</p></div></div>`;
         const card=document.createElement('article'); card.className='paired-task';
         const pair=comparison(item,{compact:true,sides:['unsteered','steered'],oursKey:'steered',baseLabel:'Unsteered',srcKey:side=>`${side}Src`,score:side=>setting.methods[side==='steered'?'SteerAct (Enc)':'Base'][item.taskIndex]});
-        section.querySelector('.dataset-actions').append(pair.querySelector('.pair-transport'));
         card.append(pair);
         section.append(card); gallery.append(section);
       }
@@ -800,9 +818,10 @@
     })();
   </script>
   <script id="demo-model">
-    // Measured Open Microwave rollout, sampled every 10 source timesteps (0–1200).
+    // Open Microwave demonstration sampled every 10 source timesteps (0–1200).
+    // Displayed feature/reference curves below are illustrative, not measured distributions.
     var SteerDemo = (() => {
-      const maxIndex = 120, initialIndex = 70;
+      const maxIndex = 120, initialIndex = 70, playbackSpeed = 3;
       const recordedSteered = [1.243501,1.069619,0.824565,0.554819,0.288112,0.071051,-0.046448,-0.082098,-0.086537,-0.083559,-0.080789,-0.083673,-0.094425,-0.111296,-0.130505,-0.146419,-0.152473,-0.146002,-0.130116,-0.109855,-0.090358,-0.076315,-0.069798,-0.068905,-0.069708,-0.068691,-0.064573,-0.142986,-0.098413,-0.055877,-0.01905,0.011152,0.03646,0.059218,0.081447,0.104163,0.126408,0.145338,0.157439,0.159797,0.151386,0.133395,0.108316,0.080103,0.053683,0.032203,0.015742,0.002946,-0.007889,-0.018208,-0.027982,-0.036331,-0.041913,-0.042783,-0.037675,-0.026761,-0.010957,0.008785,0.031129,0.054627,0.078151,0.10084,0.122094,0.141502,0.158668,0.173209,0.18493,0.193932,0.200563,0.205201,0.20799,0.208737,0.206861,0.201486,0.191837,0.177729,0.159804,0.139565,0.1192,0.101127,0.087406,0.079209,0.076565,0.078484,0.083346,0.089329,0.095028,0.100004,0.104789,0.110557,0.118753,0.130558,0.146267,0.165094,0.185364,0.204865,0.221331,0.23302,0.2391,0.239734,0.235942,0.229277,0.221398,0.213661,0.20682,0.200925,0.195435,0.189451,0.182018,0.172494,0.160837,0.147717,0.134456,0.122784,0.11446,0.110839,0.112529,0.119213,0.129699,0.142202,0.154786];
       const baseline = [1.243501,1.069619,0.824565,0.554819,0.288112,0.071051,-0.046448,-0.082098,-0.086537,-0.083559,-0.080789,-0.083673,-0.094425,-0.111296,-0.130505,-0.146419,-0.152473,-0.146002,-0.130116,-0.109855,-0.090358,-0.076315,-0.069798,-0.068905,-0.069708,-0.068691,-0.064573,-0.058392,-0.052028,-0.048307,-0.050289,-0.058735,-0.07144,-0.085387,-0.097477,-0.104741,-0.106202,-0.103742,-0.100615,-0.099851,-0.103512,-0.112119,-0.124638,-0.137691,-0.146389,-0.147978,-0.142947,-0.133612,-0.123657,-0.117653,-0.118067,-0.123666,-0.130422,-0.133887,-0.132058,-0.125827,-0.118132,-0.113306,-0.115394,-0.125573,-0.141648,-0.159484,-0.174342,-0.182422,-0.182585,-0.176783,-0.168786,-0.162385,-0.159702,-0.160543,-0.16274,-0.162907,-0.1581,-0.147663,-0.133548,-0.119209,-0.108618,-0.104913,-0.108911,-0.118692,-0.130448,-0.140149,-0.145152,-0.144793,-0.140381,-0.135573,-0.134565,-0.139123,-0.148359,-0.15991,-0.169858,-0.173863,-0.170341,-0.160992,-0.149089,-0.138309,-0.131724,-0.129907,-0.130606,-0.130281,-0.125984,-0.116764,-0.10428,-0.092307,-0.085386,-0.086857,-0.096824,-0.112227,-0.128553,-0.141428,-0.148116,-0.148768,-0.14622,-0.144324,-0.146178,-0.152796,-0.162523,-0.171642,-0.176095,-0.173262,-0.16303];
       const corrections = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.85,0.85,0.85,0.85,0.85,0.85,0.85,0.85,0.85,0.85,0.85,1.75,1.75,1.75,1.75,1.75,1.75,1.75,1.75,1.75,1.75,1.75,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,1.3,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,0.25,-0.7,-0.7,-0.7,-0.7,-0.7,-0.7,-0.7,-0.7,-0.7,-0.7,-0.7,-0.7,-0.7,-0.7,-0.7,-0.7,-0.7,-1.05,-1.05,-1.05,-1.05,-1.05,-1.05,-1.05,-1.05,-1.05,-1.05,-1.05,-1.05,-1.05,-1.05,-1.05];
@@ -843,7 +862,7 @@
         return Object.freeze({index,timestep:index*10,feature,maturity,outcome,permitted:maturity&&outcome,alpha:corrections[index]});
       });
       const stateAt = index => samples[Math.min(maxIndex, Math.max(0, Math.floor(Number.isFinite(index) ? index : 0)))];
-      const nextIndex = (index, elapsedMs, speed = 1) => Math.min(maxIndex, Math.max(0, index) + Math.max(0, Number.isFinite(elapsedMs) ? elapsedMs : 0) * 0.005 * (Number.isFinite(speed) ? Math.max(0,speed) : 1));
+      const nextIndex = (index, elapsedMs, speed = playbackSpeed) => Math.min(maxIndex, Math.max(0, index) + Math.max(0, Number.isFinite(elapsedMs) ? elapsedMs : 0) * 0.005 * (Number.isFinite(speed) ? Math.max(0,speed) : playbackSpeed));
       const baselineSamples = baseline.map((feature,index)=>Object.freeze({index,timestep:index*10,feature,alpha:0}));
       const baselineAt = index => baselineSamples[Math.min(maxIndex,Math.max(0,Math.floor(Number.isFinite(index)?index:0)))];
       const referenceSamples = reference.map((feature,index)=>Object.freeze({index,timestep:index*10,feature,halfWidth:referenceHalfWidth[index]}));
@@ -852,7 +871,7 @@
       const valuePadding=(valueMax-valueMin)*0.06;
       const yFor = value => 140-(value-(valueMin-valuePadding))/(valueMax-valueMin+2*valuePadding)*130;
       const alphaMax=Math.max(...corrections.map(Math.abs));
-      return Object.freeze({samples,stateAt,nextIndex,maxIndex,initialIndex,baselineSamples,baselineAt,referenceSamples,yFor,alphaMax});
+      return Object.freeze({samples,stateAt,nextIndex,maxIndex,initialIndex,playbackSpeed,baselineSamples,baselineAt,referenceSamples,yFor,alphaMax});
     })();
   </script>
   <script id="sync-model">
@@ -884,7 +903,7 @@
           }
           seek(index);
           try {
-            const pending=clips.map(e=>{e.video.playbackRate=5*e.timing.secondsPerDecision;return e.video.play();});
+            const pending=clips.map(e=>{e.video.playbackRate=5*SteerDemo.playbackSpeed*e.timing.secondsPerDecision;return e.video.play();});
             await Promise.all(pending);
             if(token!==generation){if(!wantsPlay)for(const e of entries)e.video.pause();return false;}
             return true;
@@ -987,11 +1006,12 @@
           });
           video.addEventListener('error',()=>{
             entry.failed=true;pause(false);video.hidden=true;byId(side+'-video-pending').hidden=false;
-            byId(side+'-media-status').textContent='Video unavailable. The measured trace remains usable.';
-            status(label+' video could not load. The measured curves remain available.');
+            byId(side+'-media-status').textContent='Video unavailable. The illustrative timeline remains usable.';
+            status(label+' video could not load. The illustrative curves remain available.');
           });
           video.addEventListener('waiting',()=>{
-            if(playing){pause(false);status('Playback paused while a video buffers.');}
+            // A queued waiting event may arrive after playback has recovered.
+            if(playing&&video.readyState<3){pause(false);status('Playback paused while a video buffers.');}
           });
           video.addEventListener('ended',()=>{
             if(playing||starting){reachedClipEnd=true;pause(false);status('Playback complete.');}
@@ -1013,14 +1033,14 @@
           }
           slider.value=String(s.index);
           slider.style.background='linear-gradient(to right,var(--teal) '+percent+'%,#dce3dd '+percent+'%)';
-          slider.setAttribute('aria-valuetext','Logged timestep '+s.timestep+' of 1200. Maturity '+(s.maturity?'ready':'not ready')+', outcome gate '+(s.outcome?'open':'closed')+'.');
+          slider.setAttribute('aria-valuetext','Timestep '+s.timestep+' of 1200. Support gate '+(s.maturity?'open':'closed')+', failure gate '+(s.outcome?'open':'closed')+'.');
           byId('frame-readout').textContent=String(s.timestep).padStart(4,'0')+' / 1200';
         }
         function updateButton() {
           const action=starting?'Cancel':playing?'Pause':index>=model.maxIndex||reachedClipEnd?'Replay':'Play';
           byId('play-text').textContent=action;
           byId('play-symbol').setAttribute('d',playing?'M2 1H5V11H2ZM8 1H11V11H8Z':'M2 1L11 6 2 11Z');
-          button.setAttribute('aria-label',action+' shared measured timeline');
+          button.setAttribute('aria-label',action+' shared demonstration');
           button.setAttribute('aria-pressed',String(playing));
         }
         function pause(announce=true) {
@@ -1038,7 +1058,7 @@
           lastTime=time;transport.sync(index);render();
           if(index>=model.maxIndex) {
             pause(false);
-            byId('playback-announcement').textContent='Measured playback complete.';
+            byId('playback-announcement').textContent='Demonstration complete.';
             status('Playback complete.');
             return;
           }
@@ -1054,8 +1074,8 @@
           starting=false;
           if(!started){updateButton();return;}
           playing=true;lastTime=null;render();updateButton();
-          byId('playback-announcement').textContent='Playing the shared measured timeline.';
-          status('Playing.');
+          byId('playback-announcement').textContent='Playing the shared demonstration at '+model.playbackSpeed+' times speed.';
+          status('Playing at '+model.playbackSpeed+'× speed.');
           frameId=requestAnimationFrame(tick);
         });
         byId('replay-button').addEventListener('click',()=>{
